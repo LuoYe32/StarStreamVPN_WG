@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <!-- Текущая конфигурация -->
+    <TextView
+        android:id="@+id/tvCurrentConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Текущая конфигурация: Не выбрано"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="20dp"/>
+
+    <!-- Кнопка подключения к VPN -->
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Подключиться к VPN"
+        android:padding="10dp"
+        android:textSize="16sp"/>
+
+    <!-- Кнопка перехода к конфигурациям -->
+    <Button
+        android:id="@+id/btnConfig"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Конфигурации"
+        android:padding="10dp"
+        android:layout_marginTop="20dp"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/tvVpnStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Статус VPN: ОТКЛЮЧЕН"
+        android:textSize="18sp"
+        android:textColor="@android:color/holo_red_dark"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+</LinearLayout>
