@@ -28,21 +28,17 @@ public class ConfigListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config_list);
 
-        // Инициализация UI
         lvConfigs = findViewById(R.id.lvConfigs);
         btnAddConfig = findViewById(R.id.btnAddConfig);
         prefs = getSharedPreferences("vpn_prefs", MODE_PRIVATE);
 
-        // Загружаем сохраненные конфигурации
         loadConfigs();
 
-        // Кнопка добавления конфигурации
         btnAddConfig.setOnClickListener(v -> {
             Intent intent = new Intent(ConfigListActivity.this, AddConfigActivity.class);
             startActivity(intent);
         });
 
-        // Выбор конфигурации
         lvConfigs.setOnItemClickListener((parent, view, position, id) -> {
             String selectedConfig = configList.get(position);
             saveCurrentConfig(selectedConfig);
@@ -59,10 +55,12 @@ public class ConfigListActivity extends AppCompatActivity {
 
     private void saveCurrentConfig(String config) {
         String[] parts = config.split(":");
-        if (parts.length == 2) {
+        if (parts.length == 4) {
             prefs.edit()
                     .putString("current_server", parts[0])
                     .putString("current_port", parts[1])
+                    .putString("current_private_key", parts[2])
+                    .putString("current_public_key", parts[3])
                     .apply();
         }
     }
@@ -70,7 +68,7 @@ public class ConfigListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadConfigs(); // Обновляем список после возврата
+        loadConfigs();
     }
 
 }

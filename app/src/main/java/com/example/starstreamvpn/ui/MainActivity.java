@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnToggleVpn, btnConfig;
     private WireGuardHelper wireGuardHelper;
     private SharedPreferences prefs;
-    private boolean isVpnConnected = false; // Храним текущее состояние VPN
+    private boolean isVpnConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,61 +35,47 @@ public class MainActivity extends AppCompatActivity {
         // Инициализация UI
         tvCurrentConfig = findViewById(R.id.tvCurrentConfig);
         tvVpnStatus = findViewById(R.id.tvVpnStatus);
-        btnToggleVpn = findViewById(R.id.btnConnect); // Переименуем для логики вкл/выкл
+        btnToggleVpn = findViewById(R.id.btnConnect);
         btnConfig = findViewById(R.id.btnConfig);
         prefs = getSharedPreferences("vpn_prefs", MODE_PRIVATE);
-
-        // Инициализация WireGuard
-        try {
-            GoBackend backend = PersistentConnectionProperties.getInstance().getBackend();
-            backend.getRunningTunnelNames();
-        } catch (NullPointerException e) {
-            PersistentConnectionProperties.getInstance().setBackend(new GoBackend(this));
-        }
 
         wireGuardHelper = new WireGuardHelper(this);
 
         // Загружаем текущую конфигурацию
         loadCurrentConfig();
 
-        // Устанавливаем обработчик на кнопку (переключение VPN)
+        // Переключение VPN
         btnToggleVpn.setOnClickListener(v -> toggleVpn());
 
+        // Переход к списку конфигураций
         btnConfig.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ConfigListActivity.class);
             startActivity(intent);
         });
     }
 
-    // Метод для переключения VPN (подключение/отключение)
     private void toggleVpn() {
+        TunnelModel tunnelModel = getCurrentTunnelConfig();
+        if (tunnelModel == null) {
+            Toast.makeText(this, "Выберите конфигурацию VPN", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (isVpnConnected) {
             wireGuardHelper.disconnectFromVpn();
             isVpnConnected = false;
             updateVpnStatusUI(false);
         } else {
-            TunnelModel tunnelModel = new TunnelModel();
-            tunnelModel.privateKey = "CGYeL7uG0mr1wmvUqzkXHE0689Kk09+17ymfSfRFlXI=";
-            tunnelModel.IP = "10.2.0.2/32";
-            tunnelModel.endpoint = "185.177.125.174:51820";
-            tunnelModel.publicKey = "jDrSMRMm6XJgYGcSd01QqJbYiW13dyaOKp8GWDs0rTQ=";
             wireGuardHelper.connectToVpn(tunnelModel);
             isVpnConnected = true;
             updateVpnStatusUI(true);
         }
     }
 
-    // Обновляем UI в зависимости от статуса VPN
     private void updateVpnStatusUI(boolean isConnected) {
-        if (isConnected) {
-            tvVpnStatus.setText("VPN Статус: Подключено ✅");
-            btnToggleVpn.setText("Отключить VPN");
-            Toast.makeText(this, "VPN подключен", Toast.LENGTH_SHORT).show();
-        } else {
-            tvVpnStatus.setText("VPN Статус: Отключено ❌");
-            btnToggleVpn.setText("Подключить VPN");
-            Toast.makeText(this, "VPN отключен", Toast.LENGTH_SHORT).show();
-        }
+        tvVpnStatus.setText(isConnected ? "VPN Статус: Подключено ✅" : "VPN Статус: Отключено ❌");
+        btnToggleVpn.setText(isConnected ? "Отключить VPN" : "Подключить VPN");
+        Toast.makeText(this, isConnected ? "VPN подключен" : "VPN отключен", Toast.LENGTH_SHORT).show();
     }
 
     private void loadCurrentConfig() {
@@ -97,6 +83,31 @@ public class MainActivity extends AppCompatActivity {
         String port = prefs.getString("current_port", "");
         tvCurrentConfig.setText(server.equals("Не выбрано") ? "Текущая конфигурация: Не выбрано"
                 : "Текущая конфигурация:\n" + server + ":" + port);
+    }
+
+    private TunnelModel getCurrentTunnelConfig() {
+        String server = prefs.getString("current_server", null);
+        String port = prefs.getString("current_port", null);
+        String privateKey = prefs.getString("current_private_key", null);
+        String publicKey = prefs.getString("current_public_key", null);
+
+        if (server == null || port == null || privateKey == null || publicKey == null) {
+            return null;
+        }
+
+        TunnelModel tunnelModel = new TunnelModel();
+        tunnelModel.privateKey = privateKey;
+        tunnelModel.IP = "10.2.0.2/32";
+        tunnelModel.endpoint = server + ":" + port;
+        tunnelModel.publicKey = publicKey;
+
+        return tunnelModel;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadCurrentConfig(); // Обновляем конфигурацию при возвращении
     }
 
 }

@@ -23,6 +23,22 @@
         android:inputType="number"
         android:layout_marginTop="10dp"/>
 
+    <!-- Поле для Public Key -->
+    <EditText
+        android:id="@+id/etPrivateKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Введите Private Key"
+        android:inputType="text"/>
+
+    <!-- Поле для Private Key -->
+    <EditText
+        android:id="@+id/etPublicKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Введите Public Key"
+        android:inputType="text"/>
+
     <!-- Кнопка сохранить -->
     <Button
         android:id="@+id/btnSaveConfig"

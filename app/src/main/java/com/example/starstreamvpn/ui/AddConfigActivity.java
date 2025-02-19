@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class AddConfigActivity extends AppCompatActivity {
 
-    private EditText etServerIP, etServerPort;
+    private EditText etServerIP, etServerPort, etPrivateKey, etPublicKey;
     private Button btnSaveConfig;
     private SharedPreferences prefs;
 
@@ -24,39 +24,39 @@ public class AddConfigActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_config);
 
-        // Инициализация UI
         etServerIP = findViewById(R.id.etServerIP);
         etServerPort = findViewById(R.id.etServerPort);
+        etPrivateKey = findViewById(R.id.etPrivateKey);
+        etPublicKey = findViewById(R.id.etPublicKey);
         btnSaveConfig = findViewById(R.id.btnSaveConfig);
         prefs = getSharedPreferences("vpn_prefs", MODE_PRIVATE);
 
-        // Обработчик кнопки "Сохранить"
         btnSaveConfig.setOnClickListener(v -> saveConfig());
     }
 
     private void saveConfig() {
         String serverIP = etServerIP.getText().toString().trim();
         String serverPort = etServerPort.getText().toString().trim();
+        String privateKey = etPrivateKey.getText().toString().trim();
+        String publicKey = etPublicKey.getText().toString().trim();
 
-        if (serverIP.isEmpty() || serverPort.isEmpty()) {
-            Toast.makeText(this, "Введите IP и порт", Toast.LENGTH_SHORT).show();
+        if (serverIP.isEmpty() || serverPort.isEmpty() || privateKey.isEmpty() || publicKey.isEmpty()) {
+            Toast.makeText(this, "Введите все данные", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String newConfig = serverIP + ":" + serverPort;
+        String newConfig = serverIP + ":" + serverPort + ":" + privateKey + ":" + publicKey;
 
-        // Получаем текущий список конфигураций
         Set<String> savedConfigs = prefs.getStringSet("config_list", new HashSet<>());
-        savedConfigs = new HashSet<>(savedConfigs); // Создаем новый объект, чтобы избежать проблем с мутацией
-
-        // Добавляем новую конфигурацию
+        savedConfigs = new HashSet<>(savedConfigs);
         savedConfigs.add(newConfig);
 
-        // Сохраняем обновленный список и делаем новую конфигурацию текущей
         prefs.edit()
                 .putStringSet("config_list", savedConfigs)
                 .putString("current_server", serverIP)
                 .putString("current_port", serverPort)
+                .putString("current_private_key", privateKey)
+                .putString("current_public_key", publicKey)
                 .apply();
 
         Toast.makeText(this, "Конфигурация сохранена!", Toast.LENGTH_SHORT).show();
