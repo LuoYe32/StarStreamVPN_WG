@@ -51,13 +51,11 @@ public class WireGuardHelper {
                                 .build())
                         .build());
 
-                // Теперь показываем Toast в главном потоке
                 ((Activity) context).runOnUiThread(() ->
                         Toast.makeText(context, "Подключение к VPN...", Toast.LENGTH_SHORT).show()
                 );
             } catch (Exception e) {
                 e.printStackTrace();
-                // Также показываем Toast в главном потоке
                 ((Activity) context).runOnUiThread(() ->
                         Toast.makeText(context, "Ошибка подключения: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );
@@ -70,13 +68,11 @@ public class WireGuardHelper {
             try {
                 backend.setState(tunnel, Tunnel.State.DOWN, null);
 
-                // Toast в главном потоке
                 ((Activity) context).runOnUiThread(() ->
                         Toast.makeText(context, "VPN отключен", Toast.LENGTH_SHORT).show()
                 );
             } catch (Exception e) {
                 e.printStackTrace();
-                // Toast в главном потоке
                 ((Activity) context).runOnUiThread(() ->
                         Toast.makeText(context, "Ошибка отключения: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );

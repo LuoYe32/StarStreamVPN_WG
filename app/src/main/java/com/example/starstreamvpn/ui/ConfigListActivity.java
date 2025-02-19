@@ -44,6 +44,14 @@ public class ConfigListActivity extends AppCompatActivity {
             saveCurrentConfig(selectedConfig);
             finish();
         });
+
+        lvConfigs.setOnItemLongClickListener((parent, view, position, id) -> {
+            String selectedConfig = configList.get(position);
+            Intent intent = new Intent(ConfigListActivity.this, AddConfigActivity.class);
+            intent.putExtra("config_data", selectedConfig);
+            startActivity(intent);
+            return true;
+        });
     }
 
     private void loadConfigs() {

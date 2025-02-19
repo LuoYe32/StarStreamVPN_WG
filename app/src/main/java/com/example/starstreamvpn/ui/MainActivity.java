@@ -3,8 +3,6 @@ package com.example.starstreamvpn.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +14,6 @@ import com.example.starstreamvpn.model.PersistentConnectionProperties;
 import com.example.starstreamvpn.model.TunnelModel;
 import com.example.starstreamvpn.vpn.WireGuardHelper;
 import com.wireguard.android.backend.GoBackend;
-import com.wireguard.android.backend.Tunnel;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,22 +29,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Инициализация UI
         tvCurrentConfig = findViewById(R.id.tvCurrentConfig);
         tvVpnStatus = findViewById(R.id.tvVpnStatus);
         btnToggleVpn = findViewById(R.id.btnConnect);
         btnConfig = findViewById(R.id.btnConfig);
         prefs = getSharedPreferences("vpn_prefs", MODE_PRIVATE);
 
+        try {
+            GoBackend backend = PersistentConnectionProperties.getInstance().getBackend();
+            if (backend == null) {
+                PersistentConnectionProperties.getInstance().setBackend(new GoBackend(this));
+            }
+        } catch (Exception e) {
+            PersistentConnectionProperties.getInstance().setBackend(new GoBackend(this));
+        }
+
         wireGuardHelper = new WireGuardHelper(this);
 
-        // Загружаем текущую конфигурацию
         loadCurrentConfig();
 
-        // Переключение VPN
         btnToggleVpn.setOnClickListener(v -> toggleVpn());
 
-        // Переход к списку конфигураций
         btnConfig.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ConfigListActivity.class);
             startActivity(intent);
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadCurrentConfig(); // Обновляем конфигурацию при возвращении
+        loadCurrentConfig();
     }
 
 }

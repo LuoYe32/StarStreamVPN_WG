@@ -18,6 +18,7 @@ public class AddConfigActivity extends AppCompatActivity {
     private EditText etServerIP, etServerPort, etPrivateKey, etPublicKey;
     private Button btnSaveConfig;
     private SharedPreferences prefs;
+    private String oldConfig = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,23 @@ public class AddConfigActivity extends AppCompatActivity {
         btnSaveConfig = findViewById(R.id.btnSaveConfig);
         prefs = getSharedPreferences("vpn_prefs", MODE_PRIVATE);
 
+        if (getIntent().hasExtra("config_data")) {
+            oldConfig = getIntent().getStringExtra("config_data");
+            assert oldConfig != null;
+            loadConfigData(oldConfig);
+        }
+
         btnSaveConfig.setOnClickListener(v -> saveConfig());
+    }
+
+    private void loadConfigData(String config) {
+        String[] parts = config.split(":");
+        if (parts.length == 4) {
+            etServerIP.setText(parts[0]);
+            etServerPort.setText(parts[1]);
+            etPrivateKey.setText(parts[2]);
+            etPublicKey.setText(parts[3]);
+        }
     }
 
     private void saveConfig() {
@@ -49,6 +66,11 @@ public class AddConfigActivity extends AppCompatActivity {
 
         Set<String> savedConfigs = prefs.getStringSet("config_list", new HashSet<>());
         savedConfigs = new HashSet<>(savedConfigs);
+
+        if (oldConfig != null) {
+            savedConfigs.remove(oldConfig);
+        }
+
         savedConfigs.add(newConfig);
 
         prefs.edit()
