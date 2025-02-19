@@ -6,6 +6,21 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← Назад"
+        android:layout_gravity="start"/>
+
+    <!-- Поле для имени конфигурации -->
+    <EditText
+        android:id="@+id/etConfigName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Введите название конфига"
+        android:inputType="text"/>
+
     <!-- Поле для IP -->
     <EditText
         android:id="@+id/etServerIP"
@@ -20,8 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите порт"
-        android:inputType="number"
-        android:layout_marginTop="10dp"/>
+        android:inputType="number"/>
 
     <!-- Поле для Public Key -->
     <EditText

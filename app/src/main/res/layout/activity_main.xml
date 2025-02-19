@@ -15,6 +15,7 @@
         android:text="Текущая конфигурация: Не выбрано"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:gravity="center"
         android:paddingBottom="20dp"/>
 
     <!-- Кнопка подключения к VPN -->

@@ -81,12 +81,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadCurrentConfig() {
-        String server = prefs.getString("current_server", "Не выбрано");
+        String configName = prefs.getString("current_config_name", "Не выбрано");
+        String server = prefs.getString("current_server", "");
         String port = prefs.getString("current_port", "");
-        tvCurrentConfig.setText(server.equals("Не выбрано") ? "Текущая конфигурация: Не выбрано"
-                : "Текущая конфигурация:\n" + server + ":" + port);
-    }
 
+        if (configName.equals("Не выбрано")) {
+            tvCurrentConfig.setText("Текущая конфигурация: Не выбрано");
+        } else {
+            tvCurrentConfig.setText(configName + "\n" + server + ":" + port);
+        }
+    }
     private TunnelModel getCurrentTunnelConfig() {
         String server = prefs.getString("current_server", null);
         String port = prefs.getString("current_port", null);
