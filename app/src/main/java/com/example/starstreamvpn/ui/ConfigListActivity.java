@@ -1,11 +1,13 @@
 package com.example.starstreamvpn.ui;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,8 +22,8 @@ public class ConfigListActivity extends AppCompatActivity {
 
     private ListView lvConfigs;
     private Button btnAddConfig, btnBack;
-    private ArrayList<String> configNames; // Список только имен конфигураций
-    private HashMap<String, String> configMap; // Соответствие имя -> полная конфигурация
+    private ArrayList<String> configNames;
+    private HashMap<String, String> configMap;
     private ArrayAdapter<String> adapter;
     private SharedPreferences prefs;
 
@@ -53,15 +55,25 @@ public class ConfigListActivity extends AppCompatActivity {
             }
         });
 
-        // Долгое нажатие - открываем экран редактирования
+        // Долгое нажатие - показать диалог (изменить/удалить)
         lvConfigs.setOnItemLongClickListener((parent, view, position, id) -> {
             String configName = configNames.get(position);
             String selectedConfig = configMap.get(configName);
-            if (selectedConfig != null) {
-                Intent intent = new Intent(ConfigListActivity.this, AddConfigActivity.class);
-                intent.putExtra("config_data", selectedConfig);
-                startActivity(intent);
-            }
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Действие с конфигурацией")
+                    .setMessage("Выберите действие для \"" + configName + "\"")
+                    .setPositiveButton("Редактировать", (dialog, which) -> {
+                        Intent intent = new Intent(ConfigListActivity.this, AddConfigActivity.class);
+                        intent.putExtra("config_data", selectedConfig);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("Удалить", (dialog, which) -> {
+                        showDeleteConfirmation(configName);
+                    })
+                    .setNeutralButton("Отмена", null)
+                    .show();
+
             return true;
         });
     }
@@ -94,6 +106,30 @@ public class ConfigListActivity extends AppCompatActivity {
                     .putString("current_public_key", parts[4])
                     .putString("current_config_name", parts[0])
                     .apply();
+        }
+    }
+
+    private void showDeleteConfirmation(String configName) {
+        new AlertDialog.Builder(this)
+                .setTitle("Удаление конфигурации")
+                .setMessage("Вы уверены, что хотите удалить \"" + configName + "\"?")
+                .setPositiveButton("Удалить", (dialog, which) -> deleteConfig(configName))
+                .setNegativeButton("Отмена", null)
+                .show();
+    }
+
+    private void deleteConfig(String configName) {
+        Set<String> savedConfigs = prefs.getStringSet("config_list", new HashSet<>());
+        savedConfigs = new HashSet<>(savedConfigs); // Копируем, чтобы избежать ошибок мутации
+
+        String fullConfig = configMap.get(configName);
+        if (fullConfig != null) {
+            savedConfigs.remove(fullConfig);
+
+            prefs.edit().putStringSet("config_list", savedConfigs).apply();
+            Toast.makeText(this, "Конфигурация \"" + configName + "\" удалена", Toast.LENGTH_SHORT).show();
+
+            loadConfigs(); // Перезагружаем список после удаления
         }
     }
 
