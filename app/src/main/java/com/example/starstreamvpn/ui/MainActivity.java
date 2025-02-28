@@ -14,6 +14,10 @@ import com.example.starstreamvpn.model.PersistentConnectionProperties;
 import com.example.starstreamvpn.model.TunnelModel;
 import com.example.starstreamvpn.vpn.WireGuardHelper;
 import com.wireguard.android.backend.GoBackend;
+import com.wireguard.config.BadConfigException;
+import com.wireguard.config.ParseException;
+
+import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
         loadCurrentConfig();
 
-        btnToggleVpn.setOnClickListener(v -> toggleVpn());
+        btnToggleVpn.setOnClickListener(v -> {
+            try {
+                toggleVpn();
+            } catch (BadConfigException | ParseException e) {
+                throw new RuntimeException(e);
+            } catch (UnknownHostException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         btnConfig.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ConfigListActivity.class);
@@ -56,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void toggleVpn() {
+    private void toggleVpn() throws BadConfigException, UnknownHostException, ParseException {
         TunnelModel tunnelModel = getCurrentTunnelConfig();
         if (tunnelModel == null) {
             Toast.makeText(this, "Выберите конфигурацию VPN", Toast.LENGTH_SHORT).show();
