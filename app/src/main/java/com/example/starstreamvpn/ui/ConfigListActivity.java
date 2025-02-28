@@ -85,7 +85,7 @@ public class ConfigListActivity extends AppCompatActivity {
 
         for (String config : savedConfigs) {
             String[] parts = config.split(":");
-            if (parts.length == 5) {
+            if (parts.length == 9) {
                 String name = parts[0];
                 configNames.add(name);
                 configMap.put(name, config);
@@ -98,12 +98,16 @@ public class ConfigListActivity extends AppCompatActivity {
 
     private void saveCurrentConfig(String config) {
         String[] parts = config.split(":");
-        if (parts.length == 5) {
+        if (parts.length == 9) {
             prefs.edit()
                     .putString("current_server", parts[1])
                     .putString("current_port", parts[2])
                     .putString("current_private_key", parts[3])
                     .putString("current_public_key", parts[4])
+                    .putString("current_address", parts[5])
+                    .putString("current_dns", parts[6])
+                    .putString("current_allowed_ips", parts[7])
+                    .putString("current_persistent_keepalive", parts[8])
                     .putString("current_config_name", parts[0])
                     .apply();
         }
