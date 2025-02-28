@@ -79,7 +79,6 @@ public void connectToVpn(TunnelModel tunnelModel) throws UnknownHostException, B
         return;
     }
 
-    // Создаем интерфейс с хардкодим значениями из конфигурации
     Interface.Builder interfaceBuilder = new Interface.Builder();
     interfaceBuilder.addDnsServer(InetAddress.getByName("10.2.0.1")) // DNS
             .addAddress(InetNetwork.parse("10.2.0.2/32")) // IP Address
