@@ -53,6 +53,30 @@
         android:hint="Введите Public Key"
         android:inputType="text"/>
 
+    <EditText
+        android:id="@+id/etAddress"
+        android:hint="Address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/etDNS"
+        android:hint="DNS"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/etAllowedIPs"
+        android:hint="Allowed IPs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/etPersistentKeepalive"
+        android:hint="Persistent Keepalive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <!-- Кнопка сохранить -->
     <Button
         android:id="@+id/btnSaveConfig"
