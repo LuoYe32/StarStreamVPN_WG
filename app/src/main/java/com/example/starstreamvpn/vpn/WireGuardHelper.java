@@ -84,7 +84,6 @@ public void connectToVpn(TunnelModel tunnelModel) throws UnknownHostException, B
             .addAddress(InetNetwork.parse("10.2.0.2/32")) // IP Address
             .parsePrivateKey("aHMSvexwq8EEf8DLuQXO7KF+1lYknfX2JULh4pjhGEc="); // PrivateKey
 
-    // Создаем peer с хардкодим значениями
     Peer.Builder peerBuilder = new Peer.Builder();
     peerBuilder.setPersistentKeepalive(25) // PersistentKeepalive
             .addAllowedIps(Collections.singleton(InetNetwork.parse("0.0.0.0/0")))// Allowed IPs
