@@ -90,7 +90,6 @@ public void connectToVpn(TunnelModel tunnelModel) throws UnknownHostException, B
             .setEndpoint(InetEndpoint.parse("169.150.218.55:51820")) // Endpoint
             .parsePublicKey("+bLlZyXzg3fqOcI7d41IYI4LON2+oDm3Yv6y8lNQWE4="); // PublicKey
 
-    // Выполнение в отдельном потоке для асинхронного подключения
     AsyncTask.execute(() -> {
         try {
             // Сетап подключения
