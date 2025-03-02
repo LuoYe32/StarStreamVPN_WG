@@ -80,7 +80,7 @@ public void connectToVpn(TunnelModel tunnelModel) throws UnknownHostException, B
     }
 
     Interface.Builder interfaceBuilder = new Interface.Builder();
-    interfaceBuilder.addDnsServer(InetAddress.getByName("10.2.0.1")) // DNS
+    interfaceBuilder.addDnsServer(InetAddress.getByName("10.2.0.1"))
             .addAddress(InetNetwork.parse("10.2.0.2/32")) // IP Address
             .parsePrivateKey("aHMSvexwq8EEf8DLuQXO7KF+1lYknfX2JULh4pjhGEc="); // PrivateKey
 
