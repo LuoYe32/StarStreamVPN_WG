@@ -92,7 +92,6 @@ public void connectToVpn(TunnelModel tunnelModel) throws UnknownHostException, B
 
     AsyncTask.execute(() -> {
         try {
-            // Сетап подключения
             backend.setState(tunnel, Tunnel.State.UP, new Config.Builder()
                     .setInterface(interfaceBuilder.build())
                     .addPeer(peerBuilder.build())
