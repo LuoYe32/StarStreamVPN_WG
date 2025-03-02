@@ -72,6 +72,7 @@ public class WireGuardHelper {
 //            }
 //        });
 //    }
+
 public void connectToVpn(TunnelModel tunnelModel) throws UnknownHostException, BadConfigException, ParseException {
     Intent intentPrepare = GoBackend.VpnService.prepare(context);
     if (intentPrepare != null) {
