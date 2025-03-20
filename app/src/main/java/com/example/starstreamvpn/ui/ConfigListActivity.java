@@ -85,7 +85,7 @@ public class ConfigListActivity extends AppCompatActivity {
 
         for (String config : savedConfigs) {
             String[] parts = config.split(":");
-            if (parts.length == 9) {
+            if (parts.length == 11) {
                 String name = parts[0];
                 configNames.add(name);
                 configMap.put(name, config);
@@ -96,9 +96,10 @@ public class ConfigListActivity extends AppCompatActivity {
         lvConfigs.setAdapter(adapter);
     }
 
+
     private void saveCurrentConfig(String config) {
         String[] parts = config.split(":");
-        if (parts.length == 9) {
+        if (parts.length == 11) {
             prefs.edit()
                     .putString("current_server", parts[1])
                     .putString("current_port", parts[2])
@@ -108,6 +109,8 @@ public class ConfigListActivity extends AppCompatActivity {
                     .putString("current_dns", parts[6])
                     .putString("current_allowed_ips", parts[7])
                     .putString("current_persistent_keepalive", parts[8])
+                    .putString("current_mtu", parts[9])
+                    .putString("current_pre_shared_key", parts[10])
                     .putString("current_config_name", parts[0])
                     .apply();
         }

@@ -69,22 +69,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toggleVpn() throws BadConfigException, UnknownHostException, ParseException {
-        TunnelModel tunnelModel = getCurrentTunnelConfig();
-        if (tunnelModel == null) {
-            Toast.makeText(this, "Выберите конфигурацию VPN", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         if (isVpnConnected) {
             wireGuardHelper.disconnectFromVpn();
             isVpnConnected = false;
             updateVpnStatusUI(false);
         } else {
-            wireGuardHelper.connectToVpn(tunnelModel);
+            wireGuardHelper.connectToVpn();
             isVpnConnected = true;
             updateVpnStatusUI(true);
         }
     }
+
 
     private void updateVpnStatusUI(boolean isConnected) {
         tvVpnStatus.setText(isConnected ? "VPN Статус: Подключено ✅" : "VPN Статус: Отключено ❌");

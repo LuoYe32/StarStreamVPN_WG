@@ -77,6 +77,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <EditText
+        android:id="@+id/etMTU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="MTU" />
+
+    <EditText
+        android:id="@+id/etPreSharedKey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Pre-shared Key" />
+
+
     <!-- Кнопка сохранить -->
     <Button
         android:id="@+id/btnSaveConfig"
