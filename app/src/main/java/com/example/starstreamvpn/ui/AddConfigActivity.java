@@ -92,20 +92,19 @@ public class AddConfigActivity extends AppCompatActivity {
                 publicKey + ":" + address + ":" + dns + ":" + allowedIPs + ":" +
                 persistentKeepalive + ":" + mtu + ":" + preSharedKey;
 
-        Set<String> savedConfigs = prefs.getStringSet("config_list", new HashSet<>());
-        savedConfigs = new HashSet<>(savedConfigs);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        // ⚡ Обновляем список конфигураций
+        Set<String> savedConfigs = new HashSet<>(prefs.getStringSet("config_list", new HashSet<>()));
 
         if (oldConfig != null) {
             savedConfigs.remove(oldConfig);
         }
-
         savedConfigs.add(newConfig);
-
-        prefs.edit().putStringSet("config_list", savedConfigs).apply();
+        editor.putStringSet("config_list", savedConfigs);
 
         // ✅ Устанавливаем новую конфигурацию активной
-        prefs.edit()
-                .putString("current_config_name", configName)
+        editor.putString("current_config_name", configName)
                 .putString("current_server", serverIP)
                 .putString("current_port", serverPort)
                 .putString("current_private_key", privateKey)
@@ -119,10 +118,13 @@ public class AddConfigActivity extends AppCompatActivity {
                 .apply();
 
         Toast.makeText(this, "Конфигурация сохранена", Toast.LENGTH_SHORT).show();
+
+        // 🚀 Переход на главный экран
         Intent intent = new Intent(AddConfigActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
+
 
 }

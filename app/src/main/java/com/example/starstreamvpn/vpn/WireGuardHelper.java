@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.starstreamvpn.model.PersistentConnectionProperties;
@@ -22,6 +23,8 @@ import com.wireguard.config.Peer;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WireGuardHelper {
 
@@ -72,8 +75,54 @@ public class WireGuardHelper {
 //        });
 //    }
 
-    public void connectToVpn() throws UnknownHostException, BadConfigException, ParseException {
-        TunnelModel tunnelModel = loadActiveConfig(); // Загружаем активную конфигурацию
+//    public void connectToVpn() throws Exception {
+//        TunnelModel tunnelModel = loadActiveConfig();
+//
+//        Intent intentPrepare = GoBackend.VpnService.prepare(context);
+//        if (intentPrepare != null) {
+//            context.startActivity(intentPrepare);
+//            return;
+//        }
+//
+//        KyberClient kyberClient = new KyberClient(context);
+//        String psk = kyberClient.generateWireGuardPSK();
+//
+//        Log.d("WireGuardHelper", "Сгенерированный PSK: " + psk);
+//
+//        Interface.Builder interfaceBuilder = new Interface.Builder();
+//        interfaceBuilder
+//                .addDnsServer(InetAddress.getByName(tunnelModel.dns))
+//                .addAddress(InetNetwork.parse(tunnelModel.IP))
+//                .parsePrivateKey(tunnelModel.privateKey);
+//
+//        Peer.Builder peerBuilder = new Peer.Builder();
+//        peerBuilder.setPersistentKeepalive(25)
+//                .addAllowedIps(tunnelModel.allowedIPs)
+//                .setEndpoint(InetEndpoint.parse(tunnelModel.endpoint))
+//                .parsePublicKey(tunnelModel.publicKey)
+//                .parsePreSharedKey(psk); // Добавили preshared key
+//
+//        AsyncTask.execute(() -> {
+//            try {
+//                backend.setState(tunnel, Tunnel.State.UP, new Config.Builder()
+//                        .setInterface(interfaceBuilder.build())
+//                        .addPeer(peerBuilder.build())
+//                        .build());
+//
+//                ((Activity) context).runOnUiThread(() ->
+//                        Toast.makeText(context, "Подключение к VPN...", Toast.LENGTH_SHORT).show()
+//                );
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                ((Activity) context).runOnUiThread(() ->
+//                        Toast.makeText(context, "Ошибка подключения: " + e.getMessage(), Toast.LENGTH_LONG).show()
+//                );
+//            }
+//        });
+//    }
+
+    public void connectToVpn() throws Exception {
+        TunnelModel tunnelModel = loadActiveConfig();
 
         Intent intentPrepare = GoBackend.VpnService.prepare(context);
         if (intentPrepare != null) {
@@ -81,35 +130,54 @@ public class WireGuardHelper {
             return;
         }
 
-        Interface.Builder interfaceBuilder = new Interface.Builder();
-        interfaceBuilder
-                .addDnsServer(InetAddress.getByName(tunnelModel.dns))
-                .addAddress(InetNetwork.parse(tunnelModel.IP))
-                .parsePrivateKey(tunnelModel.privateKey);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
 
-        Peer.Builder peerBuilder = new Peer.Builder();
-        peerBuilder.setPersistentKeepalive(25)
-                .addAllowedIps(tunnelModel.allowedIPs)
-                .setEndpoint(InetEndpoint.parse(tunnelModel.endpoint))
-                .parsePublicKey(tunnelModel.publicKey);
-
-        AsyncTask.execute(() -> {
+        executor.execute(() -> {
             try {
+                // Генерация PSK через Kyber
+                KyberClient kyberClient = new KyberClient(context.getApplicationContext());
+                String psk = kyberClient.generateWireGuardPSK();
+
+                Log.d("WireGuardHelper", "Сгенерированный PSK: " + psk);
+
+                Interface.Builder interfaceBuilder = new Interface.Builder();
+                interfaceBuilder
+                        .addDnsServer(InetAddress.getByName(tunnelModel.dns))
+                        .addAddress(InetNetwork.parse(tunnelModel.IP))
+                        .parsePrivateKey(tunnelModel.privateKey);
+
+                Peer.Builder peerBuilder = new Peer.Builder();
+                peerBuilder.setPersistentKeepalive(25)
+                        .addAllowedIps(tunnelModel.allowedIPs)
+                        .setEndpoint(InetEndpoint.parse(tunnelModel.endpoint))
+                        .parsePublicKey(tunnelModel.publicKey)
+                        .parsePreSharedKey(psk); // Добавляем PSK
+
                 backend.setState(tunnel, Tunnel.State.UP, new Config.Builder()
                         .setInterface(interfaceBuilder.build())
                         .addPeer(peerBuilder.build())
                         .build());
 
-                ((Activity) context).runOnUiThread(() ->
+                runOnUiThread(() ->
                         Toast.makeText(context, "Подключение к VPN...", Toast.LENGTH_SHORT).show()
                 );
+
             } catch (Exception e) {
                 e.printStackTrace();
-                ((Activity) context).runOnUiThread(() ->
+                runOnUiThread(() ->
                         Toast.makeText(context, "Ошибка подключения: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );
             }
         });
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+        if (context instanceof Activity) {
+            ((Activity) context).runOnUiThread(runnable);
+        } else {
+            // На всякий случай, если context не является Activity
+            Log.w("WireGuardHelper", "Context is not an Activity. UI update skipped.");
+        }
     }
 
 
@@ -150,6 +218,13 @@ public class WireGuardHelper {
         return tunnelModel;
     }
 
+    String loadServerAddress() {
+        SharedPreferences prefs = context.getSharedPreferences("vpn_prefs", Context.MODE_PRIVATE);
+        String serverAddress = prefs.getString("current_server", "");
+        String port = prefs.getString("current_port", "");
+
+        return serverAddress.isEmpty() || port.isEmpty() ? null : serverAddress + ":" + port;
+    }
 
 
 }

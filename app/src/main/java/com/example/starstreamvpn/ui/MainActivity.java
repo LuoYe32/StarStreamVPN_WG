@@ -55,9 +55,7 @@ public class MainActivity extends AppCompatActivity {
         btnToggleVpn.setOnClickListener(v -> {
             try {
                 toggleVpn();
-            } catch (BadConfigException | ParseException e) {
-                throw new RuntimeException(e);
-            } catch (UnknownHostException e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void toggleVpn() throws BadConfigException, UnknownHostException, ParseException {
+    private void toggleVpn() throws Exception {
         if (isVpnConnected) {
             wireGuardHelper.disconnectFromVpn();
             isVpnConnected = false;

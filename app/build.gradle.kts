@@ -43,6 +43,6 @@ dependencies {
     implementation(libs.tunnel)
     runtimeOnly(libs.appcompat)
     implementation("com.google.code.gson:gson:2.7")
-
+    implementation("org.bouncycastle:bcprov-jdk18on:1.80")
 
 }
