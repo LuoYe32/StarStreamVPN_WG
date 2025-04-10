@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public class AddConfigActivity extends AppCompatActivity {
     private EditText etConfigName, etServerIP, etServerPort, etPrivateKey, etPublicKey, etAddress,
             etDNS, etAllowedIPs, etPersistentKeepalive, etMTU, etPreSharedKey;
     private Button btnSaveConfig, btnBack;
+    private Switch switchPQVPN;
     private SharedPreferences prefs;
     private String oldConfig = null; // Храним старую конфигурацию
 
@@ -37,9 +39,9 @@ public class AddConfigActivity extends AppCompatActivity {
         etAllowedIPs = findViewById(R.id.etAllowedIPs);
         etPersistentKeepalive = findViewById(R.id.etPersistentKeepalive);
         etMTU = findViewById(R.id.etMTU);
-        etPreSharedKey = findViewById(R.id.etPreSharedKey);
         btnSaveConfig = findViewById(R.id.btnSaveConfig);
         btnBack = findViewById(R.id.btnBack);
+        switchPQVPN = findViewById(R.id.switchPQVPN);
         prefs = getSharedPreferences("vpn_prefs", MODE_PRIVATE);
 
         // Проверяем, передана ли конфигурация для редактирования
@@ -66,7 +68,7 @@ public class AddConfigActivity extends AppCompatActivity {
             etAllowedIPs.setText(parts[7]);
             etPersistentKeepalive.setText(parts[8]);
             etMTU.setText(parts[9]);
-            etPreSharedKey.setText(parts[10]);
+            switchPQVPN.setChecked(parts[10].equals("1"));
         }
     }
 
@@ -81,7 +83,8 @@ public class AddConfigActivity extends AppCompatActivity {
         String allowedIPs = etAllowedIPs.getText().toString().trim();
         String persistentKeepalive = etPersistentKeepalive.getText().toString().trim();
         String mtu = etMTU.getText().toString().trim().isEmpty() ? "0" : etMTU.getText().toString().trim();
-        String preSharedKey = etPreSharedKey.getText().toString().trim().isEmpty() ? "none" : etPreSharedKey.getText().toString().trim();
+//        String preSharedKey = etPreSharedKey.getText().toString().trim().isEmpty() ? "none" : etPreSharedKey.getText().toString().trim();
+        boolean isPQ = switchPQVPN.isChecked();
 
         if (configName.isEmpty() || serverIP.isEmpty() || serverPort.isEmpty() || privateKey.isEmpty() || publicKey.isEmpty()) {
             Toast.makeText(this, "Введите все данные", Toast.LENGTH_SHORT).show();
@@ -90,7 +93,7 @@ public class AddConfigActivity extends AppCompatActivity {
 
         String newConfig = configName + ":" + serverIP + ":" + serverPort + ":" + privateKey + ":" +
                 publicKey + ":" + address + ":" + dns + ":" + allowedIPs + ":" +
-                persistentKeepalive + ":" + mtu + ":" + preSharedKey;
+                persistentKeepalive + ":" + mtu + ":" + (isPQ ? "1" : "0");;
 
         SharedPreferences.Editor editor = prefs.edit();
 
@@ -114,8 +117,10 @@ public class AddConfigActivity extends AppCompatActivity {
                 .putString("current_allowed_ips", allowedIPs)
                 .putString("current_persistent_keepalive", persistentKeepalive)
                 .putString("current_mtu", mtu)
-                .putString("current_pre_shared_key", preSharedKey)
+//                .putString("current_pre_shared_key", preSharedKey)
+                .putString("current_is_pqvpn", isPQ ? "1" : "0")
                 .apply();
+
 
         Toast.makeText(this, "Конфигурация сохранена", Toast.LENGTH_SHORT).show();
 

@@ -48,10 +48,8 @@ public class KyberClient {
         Log.d("KyberClient", "SharedSecret (base64): " + Base64.getEncoder().encodeToString(sharedSecret));
         Log.d("KyberClient", "Encapsulation (base64): " + Base64.getEncoder().encodeToString(encapsulation));
 
-        // Отправляем encapsulation серверу
         sendToServer(encapsulation);
 
-        // Берем первые 32 байта для WireGuard
         byte[] psk = new byte[32];
         if (sharedSecret.length < 32) {
             throw new IllegalArgumentException("Shared secret too short for WireGuard PSK");

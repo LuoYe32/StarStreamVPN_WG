@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,16 +9,23 @@
         android:id="@+id/btnBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="← Назад"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start"
+        android:text="← Назад" />
 
     <!-- Поле для имени конфигурации -->
+    <Switch
+        android:id="@+id/switchPQVPN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="Использовать Post-Quantum VPN" />
+
     <EditText
         android:id="@+id/etConfigName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите название конфига"
-        android:inputType="text"/>
+        android:inputType="text" />
 
     <!-- Поле для IP -->
     <EditText
@@ -27,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите IP сервера"
-        android:inputType="text"/>
+        android:inputType="text" />
 
     <!-- Поле для порта -->
     <EditText
@@ -35,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите порт"
-        android:inputType="number"/>
+        android:inputType="number" />
 
     <!-- Поле для Public Key -->
     <EditText
@@ -43,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите Private Key"
-        android:inputType="text"/>
+        android:inputType="text" />
 
     <!-- Поле для Private Key -->
     <EditText
@@ -51,31 +57,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Введите Public Key"
-        android:inputType="text"/>
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/etAddress"
-        android:hint="Address"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Address" />
 
     <EditText
         android:id="@+id/etDNS"
-        android:hint="DNS"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="DNS" />
 
     <EditText
         android:id="@+id/etAllowedIPs"
-        android:hint="Allowed IPs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Allowed IPs" />
 
     <EditText
         android:id="@+id/etPersistentKeepalive"
-        android:hint="Persistent Keepalive"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:hint="Persistent Keepalive" />
 
     <EditText
         android:id="@+id/etMTU"
@@ -83,11 +89,11 @@
         android:layout_height="wrap_content"
         android:hint="MTU" />
 
-    <EditText
-        android:id="@+id/etPreSharedKey"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Pre-shared Key" />
+<!--    <EditText-->
+<!--        android:id="@+id/etPreSharedKey"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Pre-shared Key" />-->
 
 
     <!-- Кнопка сохранить -->
@@ -95,6 +101,6 @@
         android:id="@+id/btnSaveConfig"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Сохранить"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:text="Сохранить" />
 </LinearLayout>

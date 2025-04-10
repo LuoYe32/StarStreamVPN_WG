@@ -11,8 +11,6 @@ public class TunnelModel {
     public String dns;
     public String endpoint;
     public Collection<InetNetwork> allowedIPs = new ArrayList<>();
-    public String url;
+    public boolean isPQVPN = false;
     public String publicKey;
-    public int persistentKeepalive = 25;
-    public String configName;
 }

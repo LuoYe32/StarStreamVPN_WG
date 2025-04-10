@@ -110,7 +110,7 @@ public class ConfigListActivity extends AppCompatActivity {
                     .putString("current_allowed_ips", parts[7])
                     .putString("current_persistent_keepalive", parts[8])
                     .putString("current_mtu", parts[9])
-                    .putString("current_pre_shared_key", parts[10])
+                    .putString("current_is_pqvpn", parts[10])
                     .putString("current_config_name", parts[0])
                     .apply();
         }
