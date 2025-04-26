@@ -11,17 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.starstreamvpn.R;
 import com.example.starstreamvpn.model.PersistentConnectionProperties;
-import com.example.starstreamvpn.model.TunnelModel;
 import com.example.starstreamvpn.vpn.WireGuardHelper;
 import com.wireguard.android.backend.GoBackend;
-import com.wireguard.config.BadConfigException;
-import com.wireguard.config.ParseException;
-
-import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
     private TextView tvCurrentConfig, tvVpnStatus;
     private Button btnToggleVpn, btnConfig;
     private WireGuardHelper wireGuardHelper;
@@ -95,24 +89,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             tvCurrentConfig.setText(configName + "\n" + server + ":" + port);
         }
-    }
-    private TunnelModel getCurrentTunnelConfig() {
-        String server = prefs.getString("current_server", null);
-        String port = prefs.getString("current_port", null);
-        String privateKey = prefs.getString("current_private_key", null);
-        String publicKey = prefs.getString("current_public_key", null);
-
-        if (server == null || port == null || privateKey == null || publicKey == null) {
-            return null;
-        }
-
-        TunnelModel tunnelModel = new TunnelModel();
-        tunnelModel.privateKey = privateKey;
-        tunnelModel.IP = "10.2.0.2/32";
-        tunnelModel.endpoint = server + ":" + port;
-        tunnelModel.publicKey = publicKey;
-
-        return tunnelModel;
     }
 
     @Override

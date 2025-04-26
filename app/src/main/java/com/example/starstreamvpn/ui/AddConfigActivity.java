@@ -44,7 +44,6 @@ public class AddConfigActivity extends AppCompatActivity {
         switchPQVPN = findViewById(R.id.switchPQVPN);
         prefs = getSharedPreferences("vpn_prefs", MODE_PRIVATE);
 
-        // Проверяем, передана ли конфигурация для редактирования
         if (getIntent().hasExtra("config_data")) {
             oldConfig = getIntent().getStringExtra("config_data");
             assert oldConfig != null;
@@ -83,7 +82,6 @@ public class AddConfigActivity extends AppCompatActivity {
         String allowedIPs = etAllowedIPs.getText().toString().trim();
         String persistentKeepalive = etPersistentKeepalive.getText().toString().trim();
         String mtu = etMTU.getText().toString().trim().isEmpty() ? "0" : etMTU.getText().toString().trim();
-//        String preSharedKey = etPreSharedKey.getText().toString().trim().isEmpty() ? "none" : etPreSharedKey.getText().toString().trim();
         boolean isPQ = switchPQVPN.isChecked();
 
         if (configName.isEmpty() || serverIP.isEmpty() || serverPort.isEmpty() || privateKey.isEmpty() || publicKey.isEmpty()) {
@@ -97,7 +95,6 @@ public class AddConfigActivity extends AppCompatActivity {
 
         SharedPreferences.Editor editor = prefs.edit();
 
-        // ⚡ Обновляем список конфигураций
         Set<String> savedConfigs = new HashSet<>(prefs.getStringSet("config_list", new HashSet<>()));
 
         if (oldConfig != null) {
@@ -106,7 +103,6 @@ public class AddConfigActivity extends AppCompatActivity {
         savedConfigs.add(newConfig);
         editor.putStringSet("config_list", savedConfigs);
 
-        // ✅ Устанавливаем новую конфигурацию активной
         editor.putString("current_config_name", configName)
                 .putString("current_server", serverIP)
                 .putString("current_port", serverPort)
@@ -117,14 +113,12 @@ public class AddConfigActivity extends AppCompatActivity {
                 .putString("current_allowed_ips", allowedIPs)
                 .putString("current_persistent_keepalive", persistentKeepalive)
                 .putString("current_mtu", mtu)
-//                .putString("current_pre_shared_key", preSharedKey)
                 .putString("current_is_pqvpn", isPQ ? "1" : "0")
                 .apply();
 
 
         Toast.makeText(this, "Конфигурация сохранена", Toast.LENGTH_SHORT).show();
 
-        // 🚀 Переход на главный экран
         Intent intent = new Intent(AddConfigActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

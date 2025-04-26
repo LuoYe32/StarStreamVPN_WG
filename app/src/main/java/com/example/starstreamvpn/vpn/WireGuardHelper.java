@@ -51,6 +51,7 @@ public class WireGuardHelper {
 
         executor.execute(() -> {
             try {
+                long startTime = System.currentTimeMillis();
 
                 Interface.Builder interfaceBuilder = new Interface.Builder();
                 interfaceBuilder
@@ -75,6 +76,12 @@ public class WireGuardHelper {
                         .setInterface(interfaceBuilder.build())
                         .addPeer(peerBuilder.build())
                         .build());
+
+                long endTime = System.currentTimeMillis();
+                long connectionTime = endTime - startTime;
+
+                Log.d("WireGuardHelper", "⏱️ Время подключения к VPN: " + connectionTime + " мс");
+
 
                 runOnUiThread(() ->
                         Toast.makeText(context, "Подключение к VPN...", Toast.LENGTH_SHORT).show()

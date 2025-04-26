@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyFactory;
+import java.security.MessageDigest;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.spec.X509EncodedKeySpec;
@@ -50,13 +51,10 @@ public class KyberClient {
 
         sendToServer(encapsulation);
 
-        byte[] psk = new byte[32];
-        if (sharedSecret.length < 32) {
-            throw new IllegalArgumentException("Shared secret too short for WireGuard PSK");
-        }
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] pskHashed = digest.digest(sharedSecret);
 
-        System.arraycopy(sharedSecret, 0, psk, 0, 32);
-        return Base64.getEncoder().encodeToString(psk);
+        return Base64.getEncoder().encodeToString(pskHashed);
     }
 
     private SecretKeyWithEncapsulation generateSharedSecret(PublicKey serverPublicKey) throws Exception {
@@ -94,7 +92,6 @@ public class KyberClient {
                     encodedKey = Base64.getDecoder().decode(base64String);
                 }
 
-                // 👇 Вот тут самое главное — "Kyber", "BCPQC"
                 KeyFactory keyFactory = KeyFactory.getInstance("Kyber", "BCPQC");
                 X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encodedKey);
                 return keyFactory.generatePublic(keySpec);
