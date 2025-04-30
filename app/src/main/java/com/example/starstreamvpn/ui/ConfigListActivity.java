@@ -127,7 +127,7 @@ public class ConfigListActivity extends AppCompatActivity {
 
     private void deleteConfig(String configName) {
         Set<String> savedConfigs = prefs.getStringSet("config_list", new HashSet<>());
-        savedConfigs = new HashSet<>(savedConfigs); // Копируем, чтобы избежать ошибок мутации
+        savedConfigs = new HashSet<>(savedConfigs);
 
         String fullConfig = configMap.get(configName);
         if (fullConfig != null) {
@@ -136,7 +136,7 @@ public class ConfigListActivity extends AppCompatActivity {
             prefs.edit().putStringSet("config_list", savedConfigs).apply();
             Toast.makeText(this, "Конфигурация \"" + configName + "\" удалена", Toast.LENGTH_SHORT).show();
 
-            loadConfigs(); // Перезагружаем список после удаления
+            loadConfigs();
         }
     }
 
